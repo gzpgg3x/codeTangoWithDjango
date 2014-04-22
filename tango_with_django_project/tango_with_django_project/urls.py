@@ -13,6 +13,7 @@ urlpatterns = patterns('',
 
     #url(r'^admin/', include(admin.site.urls)),
     url(r'^rango/', include('rango.urls')), # ADD THIS NEW TUPLE!
+    url(r'^admin/', include(admin.site.urls)), # ADD THIS LINE    
 )
 
 # UNDERNEATH your urlpatterns definition, add the following two lines:
