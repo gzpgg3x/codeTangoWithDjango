@@ -127,6 +127,22 @@ def index(request):
     # Render and return the rendered response back to the user.
     return render_to_response('rango/index.html', context_dict, context)    
 
+def about(request):
+    # Request the context.
+    context = RequestContext(request)
+    context_dict = {}
+    #cat_list = get_category_list()
+    #context_dict['cat_list'] = cat_list
+    # If the visits session varible exists, take it and use it.
+    # If it doesn't, we haven't visited the site so set the count to zero.
+
+    count = request.session.get('visits',0)
+
+    context_dict['visit_count'] = count
+
+    # Return and render the response, ensuring the count is passed to the template engine.
+    return render_to_response('rango/about.html', context_dict , context)
+
 def category(request, category_name_url):
     # Request our context from the request passed to us.
     context = RequestContext(request)
