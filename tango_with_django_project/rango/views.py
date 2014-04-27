@@ -415,6 +415,6 @@ def like_category(request):
             category.likes = likes
             category.save()
 
-    return HttpResponse(likes)              
+    return HttpResponse(likes)             
 
           
