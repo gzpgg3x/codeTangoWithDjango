@@ -5,6 +5,7 @@ from rango.models import Page
 from django.template import RequestContext
 from django.shortcuts import render_to_response
 from rango.models import Category
+from rango.models import UserProfile
 from rango.forms import CategoryForm
 from rango.forms import PageForm
 from rango.forms import UserForm, UserProfileForm
@@ -373,12 +374,12 @@ def profile(request):
     cat_list = get_category_list()
     context_dict = {'cat_list': cat_list}
     u = User.objects.get(username=request.user)
-
+    
     try:
         up = UserProfile.objects.get(user=u)
     except:
         up = None
-
+    
     context_dict['user'] = u
     context_dict['userprofile'] = up
     return render_to_response('rango/profile.html', context_dict, context)
