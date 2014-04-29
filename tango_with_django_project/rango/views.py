@@ -25,18 +25,18 @@ def decode_url(str):
 def get_category_list(max_results=0, starts_with=''):
     cat_list = []
     if starts_with:
-        cat_list = Category.objects.filter(name__startswith=starts_with)
+        cat_list = Category.objects.filter(name__istartswith=starts_with)
     else:
         cat_list = Category.objects.all()
 
     if max_results > 0:
-        if (len(cat_list) > max_results):
+        if len(cat_list) > max_results:
             cat_list = cat_list[:max_results]
 
     for cat in cat_list:
         cat.url = encode_url(cat.name)
-    
-    return cat_list     
+
+    return cat_list    
 
 def index(request):
 
@@ -197,27 +197,30 @@ def add_category(request):
     # Render the form with error messages (if any).
     return render_to_response('rango/add_category.html', {'form': form}, context)
 
+@login_required
 def add_page(request, category_name_url):
     context = RequestContext(request)
+    cat_list = get_category_list()
+    context_dict = {}
+    context_dict['cat_list'] = cat_list
 
     category_name = decode_url(category_name_url)
     if request.method == 'POST':
         form = PageForm(request.POST)
-
+        
         if form.is_valid():
             # This time we cannot commit straight away.
             # Not all fields are automatically populated!
             page = form.save(commit=False)
 
             # Retrieve the associated Category object so we can add it.
-            # Wrap the code in a try block - check if the category actually exists!
             try:
                 cat = Category.objects.get(name=category_name)
                 page.category = cat
             except Category.DoesNotExist:
-                # If we get here, the category does not exist.
-                # Go back and render the add category form as a way of saying the category does not exist.
-                return render_to_response('rango/add_category.html', {}, context)
+                return render_to_response( 'rango/add_page.html',
+                                          context_dict,
+                                          context)
 
             # Also, create a default value for the number of views.
             page.views = 0
@@ -232,11 +235,13 @@ def add_page(request, category_name_url):
     else:
         form = PageForm()
 
-    return render_to_response( 'rango/add_page.html',
-            {'category_name_url': category_name_url,
-             'category_name': category_name, 'form': form},
-             context)
+    context_dict['category_name_url']= category_name_url
+    context_dict['category_name'] =  category_name
+    context_dict['form'] = form
 
+    return render_to_response( 'rango/add_page.html',
+                               context_dict,
+                               context)
 def register(request):
 
     # if request.session.test_cookie_worked():
@@ -416,6 +421,17 @@ def like_category(request):
             category.likes = likes
             category.save()
 
-    return HttpResponse(likes)             
+    return HttpResponse(likes) 
+
+def suggest_category(request):
+        context = RequestContext(request)
+        cat_list = []
+        starts_with = ''
+        if request.method == 'GET':
+                starts_with = request.GET['suggestion']
+
+        cat_list = get_category_list(8, starts_with)
+
+        return render_to_response('rango/category_list.html', {'cat_list': cat_list }, context)                
 
           
