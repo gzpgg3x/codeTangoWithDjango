@@ -140,6 +140,7 @@ def category(request, category_name_url):
 
     # Build up the dictionary we will use as out template context dictionary.
     context_dict = {'category_name': category_name, 'category_name_url': category_name_url}
+    #context_dict = {'category_name': category_name, 'category_name_url': category_name}
 
     cat_list = get_category_list()
     context_dict['cat_list'] = cat_list
@@ -162,7 +163,8 @@ def category(request, category_name_url):
         pass
 
     if request.method == 'POST':
-        query = request.POST['query'].strip()
+        #query = request.POST['query'].strip()
+        query = request.POST.get('query')
         if query:
             result_list = run_query(query)
             context_dict['result_list'] = result_list
@@ -229,7 +231,8 @@ def add_page(request, category_name_url):
             page.save()
 
             # Now that the page is saved, display the category instead.
-            return category(request, category_name_url)
+            return category(request, category_name)
+            #return category(request, category_name_url)
         else:
             print form.errors
     else:
@@ -242,6 +245,7 @@ def add_page(request, category_name_url):
     return render_to_response( 'rango/add_page.html',
                                context_dict,
                                context)
+    
 def register(request):
 
     # if request.session.test_cookie_worked():
