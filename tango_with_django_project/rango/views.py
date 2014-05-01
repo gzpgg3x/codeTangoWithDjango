@@ -39,41 +39,36 @@ def get_category_list(max_results=0, starts_with=''):
     return cat_list    
 
 def index(request):
-
     context = RequestContext(request)
 
-    # cat_list = get_category_list()
-    # context_dict['cat_list'] = cat_list    
+    top_category_list = Category.objects.order_by('-likes')[:5]
 
-    category_list = Category.objects.all()
-    context_dict = {'categories': category_list}
+    for category in top_category_list:
+        category.url = encode_url(category.name)
+
+    context_dict = {'categories': top_category_list}
 
     cat_list = get_category_list()
-    context_dict['cat_list'] = cat_list      
-
-    for category in category_list:
-        category.url = encode_url(category.name)
+    context_dict['cat_list'] = cat_list
 
     page_list = Page.objects.order_by('-views')[:5]
     context_dict['pages'] = page_list
 
-    #### NEW CODE ####
     if request.session.get('last_visit'):
-        # The session has a value for the last visit
+    # The session has a value for the last visit
         last_visit_time = request.session.get('last_visit')
+
         visits = request.session.get('visits', 0)
 
         if (datetime.now() - datetime.strptime(last_visit_time[:-7], "%Y-%m-%d %H:%M:%S")).days > 0:
             request.session['visits'] = visits + 1
-            request.session['last_visit'] = str(datetime.now())
     else:
         # The get returns None, and the session does not have a value for the last visit.
         request.session['last_visit'] = str(datetime.now())
         request.session['visits'] = 1
-    #### END NEW CODE ####
 
     # Render and return the rendered response back to the user.
-    return render_to_response('rango/index.html', context_dict, context)    
+    return render_to_response('rango/index.html', context_dict, context)  
 
 def about(request):
     # Request the context.
