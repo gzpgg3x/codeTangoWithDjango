@@ -29,6 +29,15 @@
             {% elif page.views == 1 %}
                 - ({{ page.views }} view)
             {% endif %}
+                <b id="pagelike_count">{{ page.mylikes }}</b> people like this Online Source
+
+            
+
+            {% if user.is_authenticated %}
+                <button id ="mylikes" data-catid="{{page.id}}" class="btn btn-mini btn-primary" type="button">Like</button>
+            {% endif %}
+            </p>            
+           
         </li>
         {% endfor %}
     </ul>
