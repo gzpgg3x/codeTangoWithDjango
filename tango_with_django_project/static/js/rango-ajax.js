@@ -10,6 +10,15 @@ $(document).ready(function() {
 	               });
 	    });
 
+	$('#pagelikes').click(function(){
+	        var pagid;
+	        pagid = $(this).attr("data-pagid");
+	         $.get('/rango/like_page/', {page_id: pagid}, function(data){
+	                   $('#pagelike_count').html(data);
+	                   $('#pagelikes').hide();
+	               });
+	    });	
+
 
     	$('#suggestion').keyup(function(){
 		var query;

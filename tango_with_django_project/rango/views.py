@@ -164,6 +164,18 @@ def category(request, category_name_url):
             result_list = run_query(query)
             context_dict['result_list'] = result_list
 
+    pag_list = get_category_list()
+    # page_name = decode_category(page_name_url)
+    # pag = Page.objects.get(name=page_name)
+
+    # if pag:
+    #         # selects all the pages associated with the selected category
+    #         pages = Page.objects.filter(category=cat)
+    #         category_id = cat.id
+    #         likes = cat.likes
+    # context_dict = {'pag_list': pag_list, 'page_name_url': page_name_url, 'page_name': page_name, 'page_id': page_id, 'mylikes': pagelikes}
+    context = RequestContext(request, context_dict)            
+
     # Go render the response and return it to the client.
     return render_to_response('rango/category.html', context_dict, context)
 
@@ -421,6 +433,24 @@ def like_category(request):
             category.save()
 
     return HttpResponse(likes) 
+
+@login_required
+def like_page(request):
+    context = RequestContext(request)
+    pag_id = None
+    if request.method == 'GET':
+        pag_id = request.GET['page_id']
+
+    pagelikes = 0
+    if pag_id:
+        page = Page.objects.get(id=int(pag_id))
+        if page:
+            pagelikes = page.mylikes + 1
+            page.mylikes = pagelikes
+            page.save()
+
+    return HttpResponse(pagelikes) 
+
 
 def suggest_category(request):
         context = RequestContext(request)
