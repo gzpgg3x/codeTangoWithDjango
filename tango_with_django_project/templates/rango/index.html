@@ -38,11 +38,11 @@
     </div>
     <!--/span-->
     <div class="span6">
-        <h2>Lonely DevNet Top Ten List</h2>
+        <h2>Top 10 List of Lonely DevNet</h2>
         {% if pages %}
         <ul>
             {% for page in pages %}
-            <li><a href="{{ page.url}}">{{ page.title }}</a> - {{ page.category}} ({{ page.views }} view(s))</li>
+            <li><a href="{{ page.url}}">{{ page.title }}</a> has {{ page.category}} ({{ page.views }} view(s)) + ({{ page.mylikes }} likes(s))</li>
             {% endfor %}
         </ul>
         {% else %}

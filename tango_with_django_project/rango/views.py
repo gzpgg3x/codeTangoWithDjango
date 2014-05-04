@@ -164,7 +164,7 @@ def category(request, category_name_url):
             result_list = run_query(query)
             context_dict['result_list'] = result_list
 
-    pag_list = get_category_list()
+    #pag_list = get_category_list()
     # page_name = decode_category(page_name_url)
     # pag = Page.objects.get(name=page_name)
 
@@ -174,7 +174,7 @@ def category(request, category_name_url):
     #         category_id = cat.id
     #         likes = cat.likes
     # context_dict = {'pag_list': pag_list, 'page_name_url': page_name_url, 'page_name': page_name, 'page_id': page_id, 'mylikes': pagelikes}
-    context = RequestContext(request, context_dict)            
+    #context = RequestContext(request, context_dict)            
 
     # Go render the response and return it to the client.
     return render_to_response('rango/category.html', context_dict, context)
@@ -440,6 +440,8 @@ def like_page(request):
     pag_id = None
     if request.method == 'GET':
         pag_id = request.GET['page_id']
+    else:
+        pag_id = request.POST['page_id']        
 
     pagelikes = 0
     if pag_id:
